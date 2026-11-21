@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Feliz cumpleaños</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@1,9..144,500;1,9..144,700&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#1c1026;--bg2:#2e1236;--rose:#ff5c8a;--peach:#ffb38a;--gold:#ffd27a;--text:#fff1ec;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+*{box-sizing:border-box}
+html{color-scheme:dark;height:100%}
+body{margin:0;min-height:100%;background:radial-gradient(120% 90% at 50% 0%,var(--bg2),var(--bg) 70%);color:var(--text);font-family:"DM Sans",system-ui,sans-serif;overflow-x:hidden;text-align:center}
+main{position:relative;z-index:2;max-width:34rem;margin:0 auto;padding:12vh 1.5rem 6rem;min-height:100vh}
+h1{font-family:"Fraunces",Georgia,serif;font-style:italic;font-weight:700;font-size:clamp(2.6rem,12vw,4.6rem);line-height:1.05;margin:0 0 2rem;color:var(--peach)}
+.name{display:block;color:var(--rose)}
+.sub{margin:0 0 2.5rem;opacity:.85;font-size:1.05rem}
+#heart{background:none;border:0;cursor:pointer;font-size:5.5rem;line-height:1;padding:.5rem;animation:beat 1.4s ease-in-out infinite;filter:drop-shadow(0 0 24px rgba(255,92,138,.6))}
+#heart:focus-visible{outline:3px solid var(--gold);border-radius:50%}
+.hint{display:block;font-size:.95rem;opacity:.8;margin-top:.5rem}
+@keyframes beat{0%,100%{transform:scale(1)}15%{transform:scale(1.18)}30%{transform:scale(1)}45%{transform:scale(1.12)}}
+#poem{margin-top:2rem}
+#poem p{font-family:"Fraunces",Georgia,serif;font-style:italic;font-weight:500;font-size:1.1rem;line-height:1.7;margin:1.2rem 0;opacity:0;transform:translateY(8px);transition:opacity .9s,transform .9s}
+#poem p.on{opacity:1;transform:none}
+#poem p.last{color:var(--gold)}
+#sky{position:fixed;inset:0;z-index:1;pointer-events:none;overflow:hidden}
+.f{position:absolute;bottom:-3rem;will-change:transform,opacity;animation:rise linear forwards}
+@keyframes rise{from{transform:translate(0,0) rotate(0);opacity:0}10%{opacity:.9}to{transform:translate(var(--dx),-115vh) rotate(var(--r));opacity:0}}
+.b{position:absolute;animation:burst 1.4s ease-out forwards}
+@keyframes burst{from{transform:translate(0,0) scale(.4);opacity:1}to{transform:translate(var(--x),var(--y)) scale(1.2);opacity:0}}
+@media (prefers-reduced-motion:reduce){#heart{animation:none}.f,.b{display:none}#poem p{transition:none}}
+</style>
+</head>
+<body>
+<div id="sky" aria-hidden="true"></div>
+<main>
+  <h1>¡Feliz cumpleaños,<span class="name" id="name"></span></h1>
+  
+  <button id="heart" aria-label="Abrir mensaje">💖<span class="hint">Toca el corazón</span></button>
+  <div id="poem" aria-live="polite"></div>
+</main>
+<script>
+// ✏️ Cambia aquí el nombre y el poema:
+var NAME = "mi niña hermosa!";
+var POEM = [
+  "Para Ilce:",
+  "Hoy no solamente celebro el día en que llegaste al mundo, también celebro la suerte de que nuestros caminos se hayan encontrado.",
+  "No sé si existan las casualidades o si hay encuentros que simplemente estaban destinados a suceder, pero entre tantas personas, tantos lugares y tantos momentos, la vida me permitió coincidir contigo, y eso es algo que siempre voy a agradecer.",
+  "Quiero que sepas que deseo verte cumplir cada uno de tus sueños, alcanzar cada una de tus metas y descubrir todas esas cosas bonitas que todavía te esperan. Quiero que la vida te devuelva en sonrisas toda la felicidad que eres capaz de transmitir.",
+  "Si pudiera pedirle algo al tiempo, sería que te regalara muchos años de vida, que nunca te falten motivos para sonreír y que, entre todos los capítulos que todavía te quedan por escribir, me permita estar presente en muchos de ellos.",
+  "Porque si algo tengo claro es que no necesito una fecha especial para recordarte lo mucho que significas para mí, pero hoy tengo una razón más para decirte que eres una de las coincidencias más bonitas que me ha regalado la vida.",
+  "Feliz cumpleaños. Que nunca se te olvide lo especial que eres, lo mucho que mereces y lo bonito que es el mundo desde que formas parte de él.",
+  "Y si la vida me lo permite, quisiera seguir celebrando no solamente tus cumpleaños, sino también cada pequeño instante que tenga la fortuna de compartir contigo. ❤️"
+];
+var EMOJIS = ["❤️","💖","💕","💗","🌸","✨","💘"];
+var calm = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+document.getElementById("name").textContent = NAME;
+var sky = document.getElementById("sky");
+function rnd(a,b){return a+Math.random()*(b-a)}
+function floater(){
+  if(calm) return;
+  var e = document.createElement("span");
+  e.className = "f";
+  e.textContent = EMOJIS[Math.floor(Math.random()*EMOJIS.length)];
+  e.style.left = rnd(0,100)+"vw";
+  e.style.fontSize = rnd(1,2.2)+"rem";
+  e.style.setProperty("--dx", rnd(-60,60)+"px");
+  e.style.setProperty("--r", rnd(-40,40)+"deg");
+  e.style.animationDuration = rnd(7,13)+"s";
+  sky.appendChild(e);
+  setTimeout(function(){e.remove()}, 13500);
+}
+function burst(x,y){
+  if(calm) return;
+  for(var i=0;i<22;i++){
+    var e = document.createElement("span");
+    e.className = "b";
+    e.textContent = EMOJIS[Math.floor(Math.random()*EMOJIS.length)];
+    e.style.left = x+"px"; e.style.top = y+"px";
+    e.style.fontSize = rnd(1,1.8)+"rem";
+    var a = rnd(0,6.283), d = rnd(70,200);
+    e.style.setProperty("--x", Math.cos(a)*d+"px");
+    e.style.setProperty("--y", Math.sin(a)*d+"px");
+    sky.appendChild(e);
+    setTimeout(function(el){return function(){el.remove()}}(e), 1500);
+  }
+}
+setInterval(floater, 700);
+for(var i=0;i<6;i++) setTimeout(floater, i*250);
+var opened = false;
+document.getElementById("heart").addEventListener("click", function(ev){
+  var r = ev.currentTarget.getBoundingClientRect();
+  burst(r.left+r.width/2, r.top+r.height/2);
+  if(opened) return;
+  opened = true;
+  ev.currentTarget.querySelector(".hint").textContent = "Con todo mi cariño";
+  var box = document.getElementById("poem");
+  POEM.forEach(function(t,i){
+    var p = document.createElement("p");
+    p.textContent = t;
+    if(i===POEM.length-1||i===0) p.className = "last";
+    box.appendChild(p);
+    setTimeout(function(){p.classList.add("on")}, calm ? 0 : 600+i*3000);
+  });
+});
+</script>
+</body>
+</html>
